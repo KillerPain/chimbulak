@@ -1,4 +1,5 @@
 arr = [];
+content = [];
 coaches = [];
 
 function f(a, b, x) {
@@ -14,7 +15,7 @@ function f(a, b, x) {
     id = x + "-" + b.toString();
     element = document.getElementById(id);
     element.className = "inner-cell selected right";
-    send(a,b);
+    send(a, b, x);
 }
 
 function ff(a, b, x) {
@@ -26,21 +27,56 @@ function ff(a, b, x) {
 }
 
 function hui(){
+    
+}
 
+
+function getContent() {
+    var date = new Date($("#datepicker").val());   
+    console.log(date.toString());
+    var d = {
+        date: date,
+    }
+
+    $.ajax({
+        url: 'http://127.0.0.1:8000/',
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {            
+            content = [];
+            $.each( data, function( key, val ) {
+                console.log(val);
+                content[val.coach] = [val.start_time, val.end_time, val.rate];  
+                
+            });
+            createcells(content.length);
+        },
+        data: JSON.stringify(d)
+    });
+} 
+
+function createcells(n) {
+    console.log(n);
+    for(var i = 1; i <= n; i++) {
+        s = '<div class="cell-line">';
+        for(var j = 1; j <= 32; j++) {
+            s += '<div class="cell"><div class="inner-cell" id="' + i + '-' + j +'"></div></div>';
+        }
+        s += '/div';   
+        $( "#schedule" ).append(s);
+    }
 }
 
 
 
-
-function send(a,b) {
-    
+function send(start_time, end_time, coach, rate) {    
     var date = new Date($("#datepicker").val());
     var order = {        
         date: date, 
-        coach:3,
-        start_time: a + 16,
-        end_time: b + 16, 
-        rate: 2,
+        coach: coach,
+        start_time: start_time + 16,
+        end_time: end_time + 16, 
+        rate: rate,
     }
     //$('#target').html('sending..');
     $.ajax({
@@ -55,6 +91,9 @@ function send(a,b) {
 }
 
 $(document).ready(function() {
+    setDate(null);
+    getContent();
+
     $('.inner-cell').click(function(e) {
         var clickedBtnID = $(this).attr('id');
         hz = $(this).attr('class').split(' ');
@@ -120,26 +159,39 @@ $(document).ready(function() {
     $.getJSON( "http://localhost:8000/coaches/", function( data ) {
         var items = [];
         $.each( data, function( key, val ) {
-            // console.log(key);
-            console.log(val.first_name);
             coaches.push(val);
-        });                
+        });
         setMenu();
     });
-
-    
     
 });
 
+function setDate(a) {
+    if(a == null) {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10) {
+            dd='0'+dd
+    } 
+
+    if(mm<10) {
+        mm='0'+mm
+    } 
+
+    today = mm+'/'+dd+'/'+yyyy;
+    $('#datepicker').val(today);
+    } else {
+        $('#datepicker').val(a.toString());
+    }
+}
+
 
 function setMenu() {
-    console.log(coaches.length);
-
     for(var i = 0; i < coaches.length; i++) {        
          s = '<div class="line"> <span class="glyphicon glyphicon-ok icon" aria-hidden="true"></span> <span class="text">' +  coaches[i].first_name + ' ' + coaches[i].last_name + '</span> </div>'
          $( "#menu" ).append(s);
-
-         
-
     }
 }
