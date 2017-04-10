@@ -10,6 +10,9 @@ nav.navbar {
   border-radius: 0;
   margin: 0;
 }
+nav.navbar .bravo {
+  margin-left: 1%;
+}
 div.main,
 .top,
 .mid,
@@ -67,9 +70,14 @@ div.content div.menu div.line {
   display: flex;
   padding: 5px 15px;
 }
-div.content div.menu div.line span.icon {
-  padding: 0px 10%;
-  color: #52bce9;
+div.content div.menu div.line div.icons {
+  margin-left: 5%;
+  width: 23%;
+  height: 3%;
+}
+div.content div.menu div.line div.icons img.icon {
+  width: 44%;
+  height: 20px;
 }
 div.content div.menu div.line span.text {
   max-width: 20px;
@@ -112,4 +120,107 @@ div.content div.schedule div.cell-line div.left {
 div.content div.schedule div.cell-line div.right {
   width: 95% !important;
   margin-right: 5%;
+}
+@media only screen and (max-width: 1368px) {
+  div.top {
+    z-index: 2;
+    box-shadow: 0.05px 0.4px 2.5px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    max-height: 50px;
+  }
+  div.top div.inputs {
+    padding: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
+  }
+  div.top div.inputs div.lol {
+    display: flex;
+    align-items: center;
+  }
+  div.top div.inputs div.lol button.top-butn {
+    padding: 3%;
+    margin-left: 7%;
+  }
+  div.top div.inputs div.lol div.input {
+    margin-left: 2%;
+    padding: 5px;
+    min-width: 20px;
+    max-width: 170px;
+  }
+  div.top div.inputs div.lol div.input .glyphicon-calendar {
+    font-size: 20px;
+    color: #52bce9;
+  }
+  div.top div.numbers {
+    display: flex;
+  }
+  div.top div.numbers span.time {
+    padding: 0;
+    transform: rotate(-90deg);
+    transform-origin: 39% 124%;
+  }
+  div.content div.menu {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    height: 100%;
+    padding-top: 5px;
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 1.05px 1.4px 3.5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+  }
+  div.content div.menu div.line {
+    display: flex;
+    padding: 5px 15px;
+  }
+  div.content div.menu div.line div.icons {
+    margin-left: 5%;
+    width: 23%;
+    height: 3%;
+  }
+  div.content div.menu div.line div.icons img.icon {
+    width: 44%;
+    height: 20px;
+  }
+  div.content div.menu div.line span.text {
+    max-width: 20px;
+    max-width: 240px;
+    padding: 0 3%;
+    color: #52bce9;
+  }
+  div.content div.schedule {
+    height: 100%;
+    padding-top: 5px;
+    padding-left: 5px;
+    background-color: rgba(210, 207, 207, 0.15);
+  }
+  div.content div.schedule div.cell-line {
+    display: flex;
+    width: 100%;
+    padding: 5px 0px;
+  }
+  div.content div.schedule div.cell-line div.cell {
+    display: flex;
+    width: 4%;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+  div.content div.schedule div.cell-line div.cell div.inner-cell {
+    width: 100%;
+    height: 95%;
+  }
+  div.content div.schedule div.cell-line div.cell div.inner-cell:hover {
+    background-color: #CD706A;
+  }
+  div.content div.schedule div.cell-line div.selected {
+    background-color: #CD706A;
+  }
+  div.content div.schedule div.cell-line div.left {
+    width: 95% !important;
+    margin-left: 6%;
+  }
+  div.content div.schedule div.cell-line div.right {
+    width: 95% !important;
+    margin-right: 6%;
+  }
 }
