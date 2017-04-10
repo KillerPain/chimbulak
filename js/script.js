@@ -1,6 +1,10 @@
 arr = [];
-content = [];
+rates = [];
 coaches = [];
+sendingStartTime = 0;
+sendingEndTime = 0;
+sendingCoachID = 0;
+
 
 function f(a, b, x) {
     for (var i = a + 1; i < b; i++) {
@@ -15,7 +19,7 @@ function f(a, b, x) {
     id = x + "-" + b.toString();
     element = document.getElementById(id);
     element.className = "inner-cell selected right";
-    send(a, b, x);
+    
 }
 
 function ff(a, b, x) {
@@ -26,14 +30,8 @@ function ff(a, b, x) {
     }
 }
 
-function hui(){
-    
-}
-
-
 function getContent() {
     var date = new Date($("#datepicker").val());   
-    console.log(date.toString());
     var d = {
         date: date,
     }
@@ -42,29 +40,45 @@ function getContent() {
         url: 'http://127.0.0.1:8000/',
         type: 'get',
         dataType: 'json',
-        success: function (data) {            
-            content = [];
-            $.each( data, function( key, val ) {
-                console.log(val);
-                content[val.coach] = [val.start_time, val.end_time, val.rate];  
-                
-            });
-            createcells(content.length);
+        success: function (data) {     
+            //console.log(data[0].start_time);       
+            vizualizeContent(data);
         },
         data: JSON.stringify(d)
     });
 } 
 
-function createcells(n) {
-    console.log(n);
+function vizualizeContent(data) {
+
+    for(var i = 0; i < data.length; i++) {
+
+        a = (data[i].start_time.hour - 8)*2 + 1;
+        if(data[i].start_time.minute != 0) {
+            a += 1;   
+        }
+        b = (data[i].end_time.hour - 8)*2 + 1;
+        if(data[i].end_time.minute != 0) {
+            b += 1;   
+        }
+        
+        f(a,b,data[i].coach);
+
+    }
+}
+
+function createcells(n, callback) {
+
     for(var i = 1; i <= n; i++) {
         s = '<div class="cell-line">';
         for(var j = 1; j <= 32; j++) {
             s += '<div class="cell"><div class="inner-cell" id="' + i + '-' + j +'"></div></div>';
         }
-        s += '/div';   
+        s += '</div>';   
         $( "#schedule" ).append(s);
     }
+
+    callback();
+    
 }
 
 
@@ -90,16 +104,18 @@ function send(start_time, end_time, coach, rate) {
     });
 }
 
-$(document).ready(function() {
-    setDate(null);
-    getContent();
+function modal() {
+    // console.log('kuku');
+     $("#myModal").modal('show');
+}
 
-    $('.inner-cell').click(function(e) {
+function logic() {
+     $('.inner-cell').click(function(e) {
         var clickedBtnID = $(this).attr('id');
         hz = $(this).attr('class').split(' ');
 
         if(hz[1] === 'selected') {
-            hui();           
+            modal();         
             return;
         }
 
@@ -122,10 +138,15 @@ $(document).ready(function() {
                     b = tmp;
                 }
                 f(a, b, ids[0]);
+                sendingCoachID = ids[0];
+                sendingStartTime = a;
+                sendingEndTime = b;
+                //send(a, b, ids[0]);
+                modal(); 
                 return;
             }
             else {
-                 arr[ids[0]].push([ids[1]]);
+                arr[ids[0]].push([ids[1]]);
             }
 
         }
@@ -133,12 +154,63 @@ $(document).ready(function() {
         document.getElementById(clickedBtnID).className = "inner-cell selected"
 
 
+    } );
+} 
+
+function loadRates() {
+    $.ajax({
+        url: 'http://127.0.0.1:8000/rates/',
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {     
+            rates = data;
+            for(var i = 0; i < rates.length; i++) {
+                 $('#money').append('<option value="' +  rates[i].id + '">' + rates[i].price + '</option>');
+            }                
+        },        
+    });
+} 
+
+$(document).ready(function() {
+    setDate(null);
+    loadRates();
+    
+    $.getJSON( "http://localhost:8000/coaches/", function( data ) {
+        var items = [];
+        $.each( data, function( key, val ) {
+            coaches.push(val);
+        });
+        setMenu();
+        createcells(coaches.length, logic);
+        getContent();
     });
     
+   
+
     $('#datepicker').datepicker();
     $('#datepicker-btn').click(function(e) {
         $('#datepicker').datepicker('show');
     });
+
+
+    $("#saveChanges").click(function() {
+        rateid = $("#money option:selected").val();
+        console.log(rateid);
+        $("#myModal").modal('hide');
+        send(sendingStartTime, sendingEndTime, sendingCoachID, rateid);
+    });
+
+    closeCancel
+
+    $("#closeCancel").click(function() {
+        ff(sendingStartTime, sendingEndTime, sendingCoachID);
+    });
+    $("#closeBtn").click(function() {
+        ff(sendingStartTime, sendingEndTime, sendingCoachID);
+    });
+    
+});
+
 
 
     // document.addEventListener("dragover", function(e){
@@ -156,15 +228,9 @@ $(document).ready(function() {
     //     console.log("X: "+dragX+" Y: "+dragY);
     // });
 
-    $.getJSON( "http://localhost:8000/coaches/", function( data ) {
-        var items = [];
-        $.each( data, function( key, val ) {
-            coaches.push(val);
-        });
-        setMenu();
-    });
     
-});
+    
+
 
 function setDate(a) {
     if(a == null) {
@@ -191,7 +257,16 @@ function setDate(a) {
 
 function setMenu() {
     for(var i = 0; i < coaches.length; i++) {        
-         s = '<div class="line"> <span class="glyphicon glyphicon-ok icon" aria-hidden="true"></span> <span class="text">' +  coaches[i].first_name + ' ' + coaches[i].last_name + '</span> </div>'
-         $( "#menu" ).append(s);
+        a = '<img src="images/skier-skiing.svg" alt="" class="icon">';
+        b = '<img src="images/snowboarding.svg" alt="" class="icon">';
+        if(!coaches[i].can_train_skiing) 
+            a= '<img src="images/skier-skiing1.svg" alt="" class="icon">';
+        if(!coaches[i].can_train_snowboard)
+            b = '<img src="images/snowboarding1.svg" alt="" class="icon">';
+
+        s = '<div class="line"><div class="icons">' + a +
+            b + '</div><span class="text">'
+             +  coaches[i].first_name + ' ' + coaches[i].last_name + '</span> </div>'
+        $( "#menu" ).append(s);
     }
 }
