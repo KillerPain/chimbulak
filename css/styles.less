@@ -1,0 +1,130 @@
+body,
+html,
+* {
+    padding: 0;
+    margin: 0;
+}
+
+nav.navbar {
+    background: linear-gradient(to bottom, #131106, #000);
+    border: none;
+    border-radius: 0;
+    margin: 0;
+}
+
+div.main,
+.top,
+.mid,
+.menu,
+.schedule {
+    padding: 0;
+}
+
+div.top {
+    z-index: 2;
+    box-shadow: 0.05px 0.4px 2.5px rgba(0, 0, 0, 0.3);    
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    max-height: 50px;
+    div.inputs {
+        padding: 0;
+        border-right: 1px solid rgba(0, 0, 0, 0.3);
+        div.lol {
+            display: flex;
+            align-items: center;
+            button.top-butn {
+                padding: 3%;
+                margin-left: 10%;
+            }
+            div.input {
+                margin-left: 2%;
+                padding: 5px;
+                min-width: 20px;
+                max-width: 240px;
+                .glyphicon-calendar {
+                        font-size: 20px;
+                        color: #52bce9;
+                }
+            }
+        }
+        
+    }
+    div.numbers {
+        display: flex;
+        span.time {
+                padding: 5px 6px;
+                transform: rotate(-90deg);
+                transform-origin: 50% 85%;
+        }
+    }
+}
+
+div.content {
+    div.menu {
+        display: flex;
+        flex-direction: column;
+        flex: 1 0 auto;
+        height: 100%;
+        padding-top: 5px;
+        border-right: 1px solid rgba(0, 0, 0, 0.3);
+        box-shadow: 1.05px 1.4px 3.5px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        div.line {            
+            display: flex;                        
+            padding: 5px 15px;
+            span.icon {
+                padding: 0px 10%;
+                color: #52bce9;                
+            }
+
+            span.text {
+                max-width: 20px;
+                max-width: 240px; 
+                padding: 0 3%;
+                color: #52bce9;
+            }
+
+        }
+    }
+    div.schedule {
+        height: 100%;    
+        padding-top: 5px;
+        padding-left: 5px;            
+        background-color: rgba(210, 207, 207, 0.15);
+        div.cell-line {         
+            display: flex;
+            width: 100%;
+            padding: 5px 0px;
+            div.cell {    
+                display: flex;        
+                width: 3.05%;                
+                height: 20px;  
+                // border: 1px solid black;
+                justify-content: center;
+                align-items: center;                             
+                div.inner-cell {
+                    width: 100%;                
+                    height: 95%;  
+                    // border: 1px solid black;
+                    &:hover {
+                        background-color: #CD706A;
+                    }
+                }           
+            }
+            div.selected {                
+                background-color: #CD706A;
+            }
+            div.left {
+                width: 95% !important;                                
+                margin-left: 5%;
+            }   
+            div.right {
+                width: 95% !important;
+                margin-right: 5%;
+            }         
+        }
+        
+    }
+}
+
+
+
